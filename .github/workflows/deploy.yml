@@ -1,4 +1,4 @@
-name: CI
+name: Build & Deploy
 on:
   push:
     branches: [ master ]
@@ -14,7 +14,7 @@ jobs:
           key: ${{secrets.SSH_KEY}}
           usename: ${{secrets.SSH_USERNAME}}
           
-          script: |
+          script:
             mkdir test
             cd test
             git clone git@github.com:bernardmuller/munchies-BE.git
