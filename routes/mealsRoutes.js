@@ -4,7 +4,7 @@ const Meal = require('../models/meal')
 
 router.get('/', async(req, res) => {
     const meals = await Meal.find({})    
-    res.send(meals);
+    res.send("works");
 });
 
 module.exports = router;
