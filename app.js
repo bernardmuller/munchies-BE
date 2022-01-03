@@ -38,7 +38,7 @@ app.use(authRoutes);
 
 
 // Listener
-app.listen(4001, () => {
+app.listen(process.env.PORT || 4001, () => {
     console.log('--------------------------------')
     console.log('   MUNCHIE MANAGER SERVER V1')
     console.log('--------------------------------')
