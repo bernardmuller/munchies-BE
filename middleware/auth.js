@@ -10,10 +10,9 @@ module.exports.auth = async(req, res, next) => {
 
     jwt.verify(token, 'KEEjnjd3bYEMqak6B6YkcsP4BuB6XA', (err, decodedtoken) => {
         if(err) {
-            console.log(err.message);
             res.status(401).json({auth: false, message: err.message});
         } else {
-            console.log(decodedtoken)
+            res.locals.decodedToken = decodedtoken;
             next();
         };
     });
