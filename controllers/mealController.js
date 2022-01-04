@@ -13,17 +13,7 @@ module.exports.getAll = async(req, res) => {
 
 
 module.exports.createMeal = async(req, res) => {
-
-    try{
-        const newMeal = new Meal(req.body);
-        await newMeal.save();
-    
-        // const meals = await Meal.find({}); 
-        res.status(200).send({ message : "meal created" });
-    }
-    catch(err) {
-        console.log(err)
-        res.send(400, err);
-    }
-    
+    const newMeal = new Meal(req.body);
+    await newMeal.save();
+    res.status(200).send({ message : "meal created" });
 };
