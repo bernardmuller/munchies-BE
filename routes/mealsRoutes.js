@@ -17,7 +17,7 @@ router.put('/:mealID/edit', auth, catchAsync(mealController.editMeal))
 router.post('/create', auth, catchAsync(mealController.createMeal));
 
 // delete meal
-router.delete('/:mealID', auth, isCreator, catchAsync(mealController.deleteMeal))
+router.delete('/:mealID', auth, catchAsync(mealController.deleteMeal))
 
 // get all meals
 router.get('/', auth, mealController.getAll)
