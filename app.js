@@ -20,7 +20,7 @@ const db = mongoose.connection;
 db.on('error', console.error.bind(console, 'Connection Error:'));
 
 db.once('open', () => {
-    console.log('Users Database Connected')
+    console.log('Database Connected')
 });
 
 //Middleware
@@ -41,7 +41,7 @@ app.use(authRoutes);
 
 
 // Listener
-app.listen(4001, () => {
+app.listen(process.env.PORT || 4001, () => {
     console.log('--------------------------------')
     console.log('   MUNCHIE MANAGER SERVER V1')
     console.log('--------------------------------')
