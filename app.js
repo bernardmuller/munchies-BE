@@ -33,7 +33,7 @@ app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 
 // Routes
-app.get('/' , () => {
+app.get('/' , (req, res) => {
     res.send('--MUNCHIES API--')
 })
 app.use('/meals', mealsRouter);
