@@ -4,4 +4,4 @@ steps:
 - name: 'gcr.io/cloud-builders/docker'
   args: ['push', 'gcr.io/lunar-ensign-287519/munchies-be:$SHORT_SHA']
 - name: 'gcr.io/cloud-builders/gcloud'
-  args: ['beta', 'run', 'deploy', 'lunar-ensign-287519', '--region=europe-west2', '--platform=managed', '--image=gcr.io/lunar-ensign-287519/munchies-be:$SHORT_SHA']
+  args: ['beta', 'run', 'deploy', 'munchies-api', '--region=europe-west2', '--platform=managed', '--image=gcr.io/lunar-ensign-287519/munchies-be:$SHORT_SHA']
