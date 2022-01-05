@@ -1,0 +1,92 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Muchies API</title>
+</head>
+<body>
+    <h1>MUNCHIES API</h1>
+    <hr>
+    <h3>Routes</h3>
+    <span>Authentication routes</span>
+    <ul>
+        <li>
+            <strong>
+                post /register 
+            </strong>
+            <span>
+               - requires email and password
+            </span>
+        </li>
+        <li>
+            <strong>
+                post /login
+            </strong>
+            <span>
+               - requires email and password, sets LOGGED_IN_USER cookie => returns JWT token and user ID
+            </span>
+        </li>
+        <li>
+            <strong>
+                get /auth
+            </strong>
+            <span>
+               - decode JWT => returns user object with auth = true or false
+            </span>
+        </li>
+        <li>
+            <strong>
+                post /logout
+            </strong>
+            <span>
+               - clears all cookies
+            </span>
+        </li>
+    </ul>
+    <span>meals routes</span>
+    <ul>
+        <li>
+            <strong>
+                get /meals
+            </strong>
+            <span>
+               - requires JWT => returns list of all meals
+            </span>
+        </li>
+        <li>
+            <strong>
+                get /meals/:mealID
+            </strong>
+            <span>
+               - requires JWT => returns meal object
+            </span>
+        </li>
+        <li>
+            <strong>
+                put /meals/:mealID/edit
+            </strong>
+            <span>
+               - requires JWT => updated meal with req.body
+            </span>
+        </li>
+        <li>
+            <strong>
+                post /meals/create
+            </strong>
+            <span>
+               - requires JWT => creates new meal from req.body
+            </span>
+        </li>
+        <li>
+            <strong>
+                delete /meals/:mealID
+            </strong>
+            <span>
+               - requires JWT => deletes meal
+            </span>
+        </li>
+    </ul>
+</body>
+</html>

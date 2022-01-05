@@ -5,7 +5,7 @@ const mongoose = require('mongoose');
 const cookieParser = require('cookie-parser');
 // const dbUrl = 'mongodb://localhost:27017/menuApp';
 const dbUrl = 'mongodb+srv://bernard:Muller1996@cluster0.94slm.mongodb.net/menuApp';
-
+const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const mealsRouter = require('./routes/mealsRoutes');
 
@@ -34,7 +34,7 @@ app.use(cookieParser());
 
 // Routes
 app.get('/' , (req, res) => {
-    res.send('--MUNCHIES API--')
+    res.sendFile(path.join(__dirname+'/views/home.html'))
 })
 app.use('/meals', mealsRouter);
 app.use(authRoutes);
