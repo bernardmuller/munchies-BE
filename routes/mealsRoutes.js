@@ -15,4 +15,4 @@ router.post('/create', auth, catchAsync(mealController.createMeal));
 
 router.delete('/:mealID', auth, catchAsync(mealController.deleteMeal))
 
-router.get('/', auth, mealController.getAll)
+router.get('/', mealController.getAll)
