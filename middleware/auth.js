@@ -1,11 +1,11 @@
 const jwt = require('jsonwebtoken');
+const AppError = require('../utils/AppError')
 
-module.exports.auth = async(req, res, next) => {
+module.exports.auth = (req, res, next) => {
     const { token } = req.body;
     
     if(!token) {
-        res.status(401).json({auth: false, message: 'No token found'});
-        return;
+        throw new AppError("No token found", 401)
     };
 
     jwt.verify(token, 'KEEjnjd3bYEMqak6B6YkcsP4BuB6XA', (err, decodedtoken) => {

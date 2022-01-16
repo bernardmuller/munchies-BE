@@ -64,6 +64,7 @@ module.exports.register = async(req, res) => {
     
 };
 
+
 module.exports.login = async(req, res) => {
     const { email, password } = req.body;
 
@@ -81,6 +82,7 @@ module.exports.login = async(req, res) => {
     }
 
 };
+
 
 module.exports.logout = async(req, res) => {
 

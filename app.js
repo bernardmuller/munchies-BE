@@ -6,6 +6,7 @@ const path = require('path');
 
 const authRoutes = require('./routes/authRoutes');
 const mealsRouter = require('./routes/mealsRoutes');
+const menuRouter = require('./routes/menuRoutes');
 
 const Database = require('./services/database')
 
@@ -26,8 +27,17 @@ app.use(cookieParser());
 app.get('/' , (req, res) => {
     res.sendFile(path.join(__dirname+'/views/home.html'))
 })
-app.use('/meals', mealsRouter);
 app.use('/auth', authRoutes);
+app.use('/meals', mealsRouter);
+app.use('/menus', menuRouter);
+
+
+//Error handling
+app.use((err, req, res, next) => {
+    const { statusCode = 500 } = err;
+    if(!err.message) err.message = 'Something went wrong' 
+    res.status(statusCode).send(err);
+})
 
 // Listener
 app.listen(process.env.PORT || 4001, () => {

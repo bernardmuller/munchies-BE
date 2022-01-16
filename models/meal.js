@@ -9,7 +9,7 @@ const mealSchema = new Schema ({
     name: {
 
         type: String, 
-        required: [true, 'Please provide your email'],
+        required: [true, 'Please provide a meal name'],
 
     },
     season: {

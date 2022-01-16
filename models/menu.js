@@ -12,7 +12,7 @@ const menuSchema = new Schema ({
         type: Date,
         min: String,
         max: String,
-        required: [true, 'Please provide a start and end date for this menu']
+        // required: [true, 'Please provide a start and end date for this menu']
     },
     meals: [
 
@@ -37,18 +37,16 @@ const menuSchema = new Schema ({
     createdAt: {
 
         type: String,
-        required: true
 
     },
     updatedAt: {
 
         type: String,
-        required: true
 
     },
 });
 
-schema.pre('save', function(next) {
+menuSchema.pre('save', function(next) {
 
     let now = Date.now;
     if (!this.createdAt) this.createdAt = now;
