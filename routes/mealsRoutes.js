@@ -7,12 +7,12 @@ const { auth } = require('../middleware/auth')
 
 module.exports = router;
 
-router.get('/:mealID', auth, catchAsync(mealController.getMeal))
+router.get('/:mealID', catchAsync(mealController.getMeal))
 
 router.put('/:mealID/edit', auth, catchAsync(mealController.editMeal))
 
 router.post('/create', auth, catchAsync(mealController.createMeal));
 
-router.delete('/:mealID', catchAsync(mealController.deleteMeal))
+router.delete('/:mealID', auth, catchAsync(mealController.deleteMeal))
 
 router.get('/', mealController.getAll)
