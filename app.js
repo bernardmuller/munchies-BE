@@ -17,7 +17,7 @@ Database.connect(dbUrl)
 app.use(express.json());
 app.use(cors({
     credentials: true, 
-    origin: "*"
+    origin: true
 }));
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
