@@ -15,7 +15,7 @@ Database.connect(dbUrl)
 
 //Middleware
 app.use(express.json());
-pp.use(express.urlencoded({ extended: false }));
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({
     credentials: true, 
