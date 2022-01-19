@@ -15,8 +15,8 @@ module.exports.getMeal = async(req, res) => {
 
 
 module.exports.createMeal = async(req, res) => {
-    let data = res.locals.decodedToken;
-    const user = await User.findById(data.id);
+//     let data = res.locals.decodedToken;
+//     const user = await User.findById(data.id);
 
     const newMeal = new Meal({...req.body, createdBy : user._id });
     await newMeal.save();
