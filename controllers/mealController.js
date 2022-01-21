@@ -1,5 +1,6 @@
 const Meal = require('../models/meal');
 const User = require('../models/User');
+const AppError = require('../utils/AppError')
 
 module.exports.getAll = async(req, res) => {
     const meals = await Meal.find({});  
@@ -19,10 +20,15 @@ module.exports.createMeal = async(req, res) => {
 //     const user = await User.findById(data.id);
 //     createdBy : user._id }
 
-    const newMeal = new Meal({...req.body});
-    await newMeal.save();
-    res.status(200).send({ message : "meal created", meal: newMeal });
-};
+   try {
+
+        const newMeal = await Meal.create({...req.body, createdBy : user._id });
+        res.status(200).send({ message : "meal created", meal: newMeal });
+        
+    } catch (error) {
+        throw new AppError(error.errors.name.message, 400)
+    }
+;
 
 
 module.exports.editMeal = async(req, res) => {
@@ -30,22 +36,27 @@ module.exports.editMeal = async(req, res) => {
     let data = res.locals.decodedToken;
     const user = await User.findById(data.id);
 
-    const updatedMeal = await Meal.findByIdAndUpdate(
-        mealID, 
-        {
-            ...req.body,
-            updatedBy: user._id
-        }, 
-        {
-            runValidators: true, 
-            new: true, 
-            useFindAndModify:false
-        }
-    );
-
-    await updatedMeal.save();
-
-    res.status(200).send({ message : "meal updated", meal: updatedMeal });
+    try {
+        const updatedMeal = await Meal.findByIdAndUpdate(
+            mealID, 
+            {
+                ...req.body,
+                updatedBy: user._id
+            }, 
+            {
+                runValidators: true, 
+                new: true, 
+                useFindAndModify:false
+            }
+        );
+    
+        await updatedMeal.save();
+    
+        res.status(200).send({ message : "meal updated", meal: updatedMeal });
+        
+    } catch (error) {
+        throw new AppError(error.errors.name.message, 400)
+    }
 };
 
 module.exports.deleteMeal = async(req, res) => {
