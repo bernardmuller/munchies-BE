@@ -16,10 +16,11 @@ module.exports.getMeal = async(req, res) => {
 
 
 module.exports.createMeal = async(req, res) => {
-    let data = res.locals.decodedToken;
-    const user = await User.findById(data.id);
+//     let data = res.locals.decodedToken;
+//     const user = await User.findById(data.id);
+//     createdBy : user._id }
 
-    try {
+   try {
 
         const newMeal = await Meal.create({...req.body, createdBy : user._id });
         res.status(200).send({ message : "meal created", meal: newMeal });
@@ -27,7 +28,7 @@ module.exports.createMeal = async(req, res) => {
     } catch (error) {
         throw new AppError(error.errors.name.message, 400)
     }
-};
+;
 
 
 module.exports.editMeal = async(req, res) => {
