@@ -74,7 +74,7 @@ module.exports.login = async(req, res) => {
     try {
         const user = await User.login(email, password);
         const token = createToken(user._id);
-        res.cookie('token', token, { httpOnly: true, sameSite: 'None', maxAge: maxAge * 1000 });
+        res.cookie('token', token, { httpOnly: true, sameSite: 'None', secure: true, maxAge: maxAge * 1000 });
         res.status(200).json({ user, token })
     } catch (error) {
         const errors = handleError(error)
