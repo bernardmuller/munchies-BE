@@ -9,7 +9,7 @@ const mealSchema = new Schema ({
     name: {
 
         type: String, 
-        required: [true, 'Please provide your email'],
+        required: [true, 'Please provide a meal name'],
 
     },
     season: {
@@ -26,9 +26,8 @@ const mealSchema = new Schema ({
     },
     ingredients: [
         {
-            type: Schema.Types.ObjectId,
-            ref:'Ingredient'
-        }
+            name: String,
+       }
     ],
     cuisine: {
         type: Schema.Types.ObjectId,

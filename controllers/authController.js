@@ -2,6 +2,8 @@ const User = require('../models/User');
 const jwt = require('jsonwebtoken');
 const { response } = require('express');
 const SECRET = process.env.SECRET;
+const AppError = require('../utils/AppError')
+
 
 // handle errors
 const handleError = (err) => {
@@ -54,6 +56,7 @@ module.exports.register = async(req, res) => {
         
         const newUser = await User.create({ email, password });
         const token = createToken(newUser._id);
+        
         res.cookie('token', token, { httpOnly: true, maxAge: maxAge * 1000 });
         res.status(201).json({ user: newUser._id, token: token});
         
@@ -64,16 +67,15 @@ module.exports.register = async(req, res) => {
     
 };
 
+
 module.exports.login = async(req, res) => {
     const { email, password } = req.body;
 
     try {
-        
         const user = await User.login(email, password);
         const token = createToken(user._id);
         res.cookie('token', token, { httpOnly: true, sameSite: 'None', maxAge: maxAge * 1000 });
         res.status(200).json({ user, token })
-
     } catch (error) {
         const errors = handleError(error)
         console.log(errors)
@@ -81,6 +83,7 @@ module.exports.login = async(req, res) => {
     }
 
 };
+
 
 module.exports.logout = async(req, res) => {
 
@@ -99,26 +102,10 @@ module.exports.logout = async(req, res) => {
 
 module.exports.auth = async(req, res) => {
     const token = req.cookies['token'];
+    if(!token) return res.status(401).json({auth: false, message: 'Unauthorized'});
     
-    if(!token) {
-        res.status(401).json({auth: false, message: 'No token found'});
-        return;
-    };
-
     jwt.verify(token, 'KEEjnjd3bYEMqak6B6YkcsP4BuB6XA', (err, decodedtoken) => {
-        if(err) {
-            console.log(err.message);
-            res.status(401).json({auth: false, message: err.message});
-        } else {
-            console.log(decodedtoken)
-            res.status(200).json({auth: true})
-        };
+        if(err) return res.status(401).json({auth: false, message: err.message});
+        res.status(200).json({auth: true, message: "Authorized"})
     });
 };
-
-
-module.exports.events = async(req, res) => {
-    console.log("Received Event", req.body.type);
-  
-    res.send({});
-}
