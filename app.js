@@ -15,13 +15,13 @@ const dbUrl = 'mongodb+srv://bernard:Muller1996@cluster0.94slm.mongodb.net/menuA
 Database.connect(dbUrl)
 
 //Middleware
+app.use(express.json());
+app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(cors({
     credentials: true, 
     origin: true
 }));
-app.use(express.json());
-app.use(express.urlencoded({ extended: false }));
 
 // Routes
 app.get('/' , (req, res) => {
