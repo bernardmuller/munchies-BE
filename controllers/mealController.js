@@ -9,26 +9,26 @@ module.exports.getAll = async(req, res) => {
 
 
 module.exports.getMeal = async(req, res) => {
-    const { mealID } = req.params;  
-    const meal = await Meal.findById(mealID);
-    res.status(200).send(meal);
+    try {
+        const { mealID } = req.params;  
+        const meal = await Meal.findById(mealID);
+        res.status(200).send(meal);
+    } catch (error) {
+        throw new AppError(error.errors.name.message, 400)
+    }
 };
 
 
 module.exports.createMeal = async(req, res) => {
-//     let data = res.locals.decodedToken;
-//     const user = await User.findById(data.id);
-//     createdBy : user._id }
-
-   try {
-
+    let currentUser = res.locals.currentUser;
+    const user = await User.findById(currentUser.id);
+    try {
         const newMeal = await Meal.create({...req.body, createdBy : user._id });
         res.status(200).send({ message : "meal created", meal: newMeal });
-        
     } catch (error) {
         throw new AppError(error.errors.name.message, 400)
     }
-;
+};
 
 
 module.exports.editMeal = async(req, res) => {

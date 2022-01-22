@@ -1,19 +1,21 @@
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError')
+const User = require('../models/User');
 
 module.exports.auth = (req, res, next) => {
-    const { token } = req.body;
+    const header = req.headers['authorization'];
+    if(typeof header === 'undefined') throw new AppError("Unauthorized", 403);
     
-    if(!token) {
-        throw new AppError("No token found", 401)
-    };
+    const bearer = header.split(' ');
+    const token = bearer[1];
 
-    jwt.verify(token, 'KEEjnjd3bYEMqak6B6YkcsP4BuB6XA', (err, decodedtoken) => {
-        if(err) {
-            res.status(401).json({auth: false, message: err.message});
-        } else {
-            res.locals.decodedToken = decodedtoken;
-            next();
-        };
+    req.token = token;
+
+    jwt.verify(token, 'KEEjnjd3bYEMqak6B6YkcsP4BuB6XA', async(err, decodedtoken) => {
+        if(err) res.status(401).json({auth: false, message: err.message});
+        const user = await User.findById(decodedtoken.id);
+        res.locals.currentUser = user;
     });
+
+    next();
 };
