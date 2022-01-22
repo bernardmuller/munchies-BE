@@ -81,28 +81,23 @@ module.exports.login = async(req, res) => {
         console.log(errors)
         res.status(400).json({ errors });
     }
-
 };
 
 
 module.exports.logout = async(req, res) => {
-
     try {
-        
-        res.cookie('token', '', { httpOnly: true, maxAge: 1 });
+        res.cookie('token', '', { httpOnly: true, sameSite: 'None', secure: true, maxAge: 1 });
         res.status(200).json()
-
     } catch (error) {
         console.log(error)
         res.status(400).json({ errors });
     }
-
 };
 
 
 module.exports.auth = async(req, res) => {
-    const token = req.cookies['token'];
-    if(!token) return res.status(401).json({auth: false, message: 'Unauthorized'});
+    let currentUser = res.locals.currentUser;
+    if(!currentUser) return res.status(401).json({auth: false, message: 'Unauthorized'});
     
     jwt.verify(token, 'KEEjnjd3bYEMqak6B6YkcsP4BuB6XA', (err, decodedtoken) => {
         if(err) return res.status(401).json({auth: false, message: err.message});
