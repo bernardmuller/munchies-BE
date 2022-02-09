@@ -2,7 +2,7 @@ const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError')
 const User = require('../models/User');
 
-module.exports.auth = (req, res, next) => {
+module.exports.auth = async(req, res, next) => {
     const header = req.headers['authorization'];
     if(typeof header === 'undefined') throw new AppError("Unauthorized", 403);
     

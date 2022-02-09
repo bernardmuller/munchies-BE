@@ -4,6 +4,7 @@ const Menu = require('../models/menu');
 
 //get menus
 module.exports.getAll = async(req, res) => {
+    
     const menus = await Menu.find({});
     res.status(200).send(menus);
 };
@@ -11,7 +12,10 @@ module.exports.getAll = async(req, res) => {
 //get menu
 module.exports.getMenu = async(req, res) => {
     const { menuID } = req.params;  
-    const menu = await Menu.findById(menuID);
+    const menu = await Menu.findById(menuID)
+    .populate({
+        path: 'meals'
+    });
     res.status(200).send(menu);
 };
 
@@ -21,7 +25,7 @@ module.exports.createMenu = async(req, res) => {
     const user = await User.findById(data.id);
 
     try {
-        const newMenu = new Menu({...req.body, createdBy : user._id });
+        const newMenu = new Menu({"name": "Untitled Menu", createdBy : user._id });
         await newMenu.save();
         res.status(200).send({ message : "menu created", meal: newMenu });
     } catch (error) {
@@ -31,25 +35,19 @@ module.exports.createMenu = async(req, res) => {
 
 //add meal
 module.exports.addMeal = async(req, res) => {
-    const { menuID, mealID } = req.body;
-    let data = res.locals.decodedToken;
-    const user = await User.findById(data.id);
-    const meal = await Meal.findById(mealID);
+    const { menu_id, meals } = req.body;
+
+    let currentUser = res.locals.currentUser;
+
+    // if(!meals) throw new AppError("No meal/s to add", 400);
 
     try {
-        let menu = await Menu.findByIdAndUpdate(
-            menuID, 
-            {
-                updatedBy: user._id
-            }, 
-            {
-                runValidators: true, 
-                new: true, 
-                useFindAndModify:false
-            }
-        );
-        menu.meals.push(meal)
-    
+        let menu = await Menu.findById(menu_id);
+        meals.forEach(meal => {
+            menu.meals.push(meal.id)
+        })
+        menu.updatedBy = currentUser._id;
+
         await menu.save();
     
         res.status(200).send({ message : "meal added to menu", menu: menu });
