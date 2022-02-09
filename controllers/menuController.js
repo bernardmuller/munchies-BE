@@ -11,12 +11,19 @@ module.exports.getAll = async(req, res) => {
 
 //get menu
 module.exports.getMenu = async(req, res) => {
-    const { menuID } = req.params;  
-    const menu = await Menu.findById(menuID)
-    .populate({
-        path: 'meals'
-    });
-    res.status(200).send(menu);
+    try {
+        const { menuID } = req.params;  
+        const menu = await Menu.findById(menuID)
+        .populate({
+            path: 'meals',
+            model: 'Meal'
+        });
+        res.status(200).send(menu);
+        
+    } catch (error) {
+        throw new AppError(error.errors.name.message, 400)
+        
+    }
 };
 
 //create menu
@@ -35,18 +42,16 @@ module.exports.createMenu = async(req, res) => {
 
 //add meal
 module.exports.addMeal = async(req, res) => {
-    const { menu_id, meals } = req.body;
-
-    let currentUser = res.locals.currentUser;
-
-    // if(!meals) throw new AppError("No meal/s to add", 400);
-
     try {
+        const { menu_id, meals } = req.body;
+        let currentUser = res.locals.user;
+        if(!meals) throw new AppError("No meal/s to add", 400);
+
         let menu = await Menu.findById(menu_id);
         meals.forEach(meal => {
             menu.meals.push(meal.id)
         })
-        menu.updatedBy = currentUser._id;
+        menu.updatedBy = currentUser;
 
         await menu.save();
     
