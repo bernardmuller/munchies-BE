@@ -16,7 +16,8 @@ module.exports.getMenu = async(req, res) => {
         const menu = await Menu.findById(menuID)
         .populate({
             path: 'meals',
-            model: 'Meal'
+            model: 'Meal',
+            select: 'name'
         });
         res.status(200).send(menu);
         

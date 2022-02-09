@@ -46,7 +46,7 @@ userSchema.pre('save', async function(next) {
 
 
 userSchema.statics.login = async function(email, password) {
-    const user = await this.findOne({ email: email });
+    const user = await this.findOne({ email: email })
 
     if(!user) {
         throw Error('incorrect email');
@@ -56,7 +56,7 @@ userSchema.statics.login = async function(email, password) {
     if(!auth) {
         throw Error('incorrect password');    
     };
-    return user;
+    return user._id;
 };
 
 module.exports = mongoose.model('User', userSchema);
