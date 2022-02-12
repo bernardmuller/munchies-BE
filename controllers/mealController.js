@@ -4,7 +4,7 @@ const AppError = require('../utils/AppError')
 
 module.exports.getAll = async(req, res) => {
     const meals = await Meal.find({ 'createdBy' : res.locals.user})
-    .select('_id name season image')
+    .select('_id name season image favourite')
     res.status(200).send(meals);
 };
 
@@ -59,4 +59,30 @@ module.exports.deleteMeal = async(req, res) => {
         res.status(401).send({ message : "You are not the creator of this meal." });
     };
     await meal.findByIdAndDelete(mealID);
+};
+
+module.exports.favourite = async(req, res) => {
+    const user = await User.findById(res.locals.user);
+    const meal = await Meal.findById(req.params.mealID);
+
+    console.log(res.locals.user)
+    console.log(meal)
+
+    if(user._id !== meal.createdBy) {
+        res.status(401).send({ message : "You are not the creator of this meal." });
+    };
+    const updatedMeal = await Meal.findByIdAndUpdate(
+        req.params.mealID, 
+        {
+            favourite: req.body.favourite,
+            updatedBy: user._id
+        }, 
+        {
+            runValidators: true, 
+            new: true, 
+            useFindAndModify:false
+        }
+    )
+    .select('id name favourite');
+    res.status(401).send({ message : "Success" , updatedMeal});
 };

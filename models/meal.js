@@ -31,12 +31,24 @@ const mealSchema = new Schema ({
         type: Schema.Types.ObjectId,
         ref: 'Cuisine'
     },
-    favourite: Boolean,
+    favourite: {
+        type: Boolean,
+        default: false,
+    },
     image: String,
     url: String,
-    prepTime: Number,
-    cookTime: Number,
-    readyIn: Number,
+    prepTime: {
+        type: Number,
+        min: 0,
+    },
+    cookTime: {
+        type: Number,
+        min: 0,
+    },
+    readyIn: {
+        type: Number,
+        min: 0,
+    },
     rating: {
 
         type: Number,
