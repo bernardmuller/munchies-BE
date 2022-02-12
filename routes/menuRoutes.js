@@ -7,13 +7,13 @@ const { auth } = require('../middleware/auth')
 
 module.exports = router;
 
-router.get('/:menuID', auth, catchAsync(menuController.getMenu))
+router.get('/:menuID', auth, catchAsync(menuController.get))
 
-router.put('/:menuID/edit', auth, catchAsync(menuController.editMenu))
+router.put('/:menuID/edit', auth, catchAsync(menuController.update))
 
-router.post('/create', auth, catchAsync(menuController.createMenu));
+router.post('/create', auth, catchAsync(menuController.create));
 
-router.delete('/:menuID', auth, catchAsync(menuController.deleteMenu))
+router.delete('/:menuID', auth, catchAsync(menuController.delete))
 
 router.post('/addMeal', auth, catchAsync(menuController.addMeal))
 

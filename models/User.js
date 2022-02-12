@@ -3,7 +3,7 @@ const Schema = mongoose.Schema;
 const { isEmail } = require('validator');
 const bcrypt = require('bcrypt');
 const axios = require('axios');
-
+const Menu = require('../models/menu');
 
 const userSchema = Schema({
     email: {
@@ -36,6 +36,12 @@ const userSchema = Schema({
         type: Boolean,
         default: false,
     },
+    menus : [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Menu'
+        }
+    ]
 }, {timestamps: true});
 
 userSchema.pre('save', async function(next) {

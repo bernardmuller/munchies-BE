@@ -7,6 +7,7 @@ const path = require('path');
 const authRoutes = require('./routes/authRoutes');
 const mealsRouter = require('./routes/mealsRoutes');
 const menuRouter = require('./routes/menuRoutes');
+const userRouter = require('./routes/userRoutes');
 
 const Database = require('./services/database')
 
@@ -30,6 +31,7 @@ app.get('/' , (req, res) => {
 app.use('/auth', authRoutes);
 app.use('/meals', mealsRouter);
 app.use('/menus', menuRouter);
+app.use('/users', userRouter);
 
 //Error handling
 app.use((err, req, res, next) => {

@@ -9,19 +9,17 @@ const mealSchema = new Schema ({
     name: {
 
         type: String, 
-        required: [true, 'Please provide a meal name'],
+        default: "Untitled Meal"
 
     },
     season: {
 
         type: String,
-        required: [true, 'Please provide a season'],
 
     },
     directions: {
 
         type: String,
-        required: true
 
     },
     ingredients: [

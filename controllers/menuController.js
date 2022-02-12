@@ -5,19 +5,18 @@ const Menu = require('../models/menu');
 //get menus
 module.exports.getAll = async(req, res) => {
     
-    const menus = await Menu.find({});
+    const menus = await Menu.find({})
     res.status(200).send(menus);
 };
 
 //get menu
-module.exports.getMenu = async(req, res) => {
+module.exports.get = async(req, res) => {
     try {
         const { menuID } = req.params;  
         const menu = await Menu.findById(menuID)
         .populate({
             path: 'meals',
             model: 'Meal',
-            select: 'name'
         });
         res.status(200).send(menu);
         
@@ -28,7 +27,7 @@ module.exports.getMenu = async(req, res) => {
 };
 
 //create menu
-module.exports.createMenu = async(req, res) => {
+module.exports.create = async(req, res) => {
     let data = res.locals.decodedToken;
     const user = await User.findById(data.id);
 
@@ -64,7 +63,7 @@ module.exports.addMeal = async(req, res) => {
 
 //remove meal
 //edit menu
-module.exports.editMenu = async(req, res) => {
+module.exports.update = async(req, res) => {
 
 }
 

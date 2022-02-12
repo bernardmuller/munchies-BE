@@ -3,25 +3,19 @@ const User = require('../models/User');
 const AppError = require('../utils/AppError')
 
 module.exports.getAll = async(req, res) => {
-    const meals = await Meal.find({});  
-    res.send(meals);
+    const meals = await Meal.find({ 'createdBy' : res.locals.user})
+    .select('_id name season image')
+    res.status(200).send(meals);
 };
 
-
 module.exports.getMeal = async(req, res) => {
-    try {
-        const { mealID } = req.params;  
-        const meal = await Meal.findById(mealID);
-        res.status(200).send(meal);
-    } catch (error) {
-        throw new AppError(error.errors.name.message, 400)
-    }
+    const meal = await Meal.findById(req.params.mealID);
+    res.status(200).send(meal);
 };
 
 
 module.exports.createMeal = async(req, res) => {
-    let currentUser = res.locals.currentUser;
-    const user = await User.findById(currentUser.id);
+    const user = await User.findById(res.locals.user);
     try {
         const newMeal = await Meal.create({...req.body, createdBy : user._id });
         res.status(200).send({ message : "meal created", meal: newMeal });
@@ -33,8 +27,7 @@ module.exports.createMeal = async(req, res) => {
 
 module.exports.editMeal = async(req, res) => {
     const { mealID } = req.params; 
-    let data = res.locals.decodedToken;
-    const user = await User.findById(data.id);
+    const user = await User.findById(res.locals.user);
 
     try {
         const updatedMeal = await Meal.findByIdAndUpdate(
@@ -60,20 +53,10 @@ module.exports.editMeal = async(req, res) => {
 };
 
 module.exports.deleteMeal = async(req, res) => {
-    let data = res.locals.decodedToken;
-    const user = await User.findById(data.id);
-    
-    const { mealID } = req.params;
-    const meal = await Meal.findById(mealID);
-
+    const user = await User.findById(res.locals.user);
+    const meal = await Meal.findById(req.params.mealID);
     if(user.id !== meal.createdBy) {
-        res.status(401)
-        .send(
-            { 
-                message : "You are not the creator of this meal.", 
-            }
-        );
-    }
-    
+        res.status(401).send({ message : "You are not the creator of this meal." });
+    };
     await meal.findByIdAndDelete(mealID);
 };
