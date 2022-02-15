@@ -22,14 +22,8 @@ const menuSchema = new Schema ({
     updatedBy: {
         type: Schema.Types.ObjectId,
         ref: 'User'
-    },
-    createdAt: {
-        type: String,
-    },
-    updatedAt: {
-        type: String,
-    },
-});
+    }
+}, {timestamps: true});
 
 menuSchema.pre('save', function(next) {
 

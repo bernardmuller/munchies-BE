@@ -4,7 +4,7 @@ const AppError = require('../utils/AppError')
 
 module.exports.getAll = async(req, res) => {
     const meals = await Meal.find({ 'createdBy' : res.locals.user})
-    .select('_id name season image favourite')
+    .select('_id name season ingredients image favourite')
     res.status(200).send(meals);
 };
 
@@ -12,7 +12,6 @@ module.exports.getMeal = async(req, res) => {
     const meal = await Meal.findById(req.params.mealID);
     res.status(200).send(meal);
 };
-
 
 module.exports.createMeal = async(req, res) => {
     const user = await User.findById(res.locals.user);
@@ -23,7 +22,6 @@ module.exports.createMeal = async(req, res) => {
         throw new AppError(error.errors.name.message, 400)
     }
 };
-
 
 module.exports.editMeal = async(req, res) => {
     const { mealID } = req.params; 
@@ -58,15 +56,12 @@ module.exports.deleteMeal = async(req, res) => {
     if(user.id !== meal.createdBy) {
         res.status(401).send({ message : "You are not the creator of this meal." });
     };
-    await meal.findByIdAndDelete(mealID);
+    await meal.findByIdAndDelete(req.params.mealID);
 };
 
 module.exports.favourite = async(req, res) => {
     const user = await User.findById(res.locals.user);
     const meal = await Meal.findById(req.params.mealID);
-
-    console.log(res.locals.user)
-    console.log(meal)
 
     if(user._id !== meal.createdBy) {
         res.status(401).send({ message : "You are not the creator of this meal." });
@@ -85,4 +80,54 @@ module.exports.favourite = async(req, res) => {
     )
     .select('id name favourite');
     res.status(401).send({ message : "Success" , updatedMeal});
+};
+
+module.exports.add = async(req, res) => {
+    try {
+        const meal_id = req.params.id;
+        const { ingredient_id } = req.body;
+        let user = res.locals.user;
+        
+        if(!ingredient_id || ingredient_id === "" || ingredient_id === undefined) {
+            throw new AppError("No ingredient to add", 400);
+        };
+
+        let meal = await Meal.findById(meal_id);
+
+        meal.ingredients.push(ingredient_id);
+        
+        meal.updatedBy = user;
+
+        await meal.save();
+    
+        res.status(200).send({ message : "ingredient added to meal", meal: meal });
+    } catch (error) {
+        throw new AppError(error.errors.name.message, 400)
+    };
+};
+
+module.exports.remove = async(req, res) => {
+    try {
+        const meal_id = req.params.id;
+        const { ingredient_id } = req.body;
+        let user = res.locals.user;
+        
+        if(!ingredient_id || ingredient_id === "" || ingredient_id === undefined) {
+            throw new AppError("No ingredient provided", 400);
+        };
+
+        let meal = await Meal.findById(meal_id);
+
+        meal.ingredients = meal.ingredients.filter(function(item, index, arr) { 
+            return item != ingredient_id;
+        });
+
+        meal.updatedBy = user;
+
+        await meal.save();
+    
+        res.status(200).send({ message : "ingredient removed from meal", meal: meal });
+    } catch (error) {
+        throw new AppError(error.errors.name.message, 400)
+    };
 };

@@ -19,4 +19,8 @@ router.delete('/:mealID', auth, catchAsync(mealController.deleteMeal));
 
 router.get('/', auth, catchAsync( mealController.getAll));
 
+router.post('/:id/add', auth, catchAsync(mealController.add));
+
+router.post('/:id/remove', auth, catchAsync(mealController.remove));
+
 // router.put('/favourite', auth, catchAsync( mealController.favourite));
