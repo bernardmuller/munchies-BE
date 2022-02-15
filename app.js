@@ -44,7 +44,7 @@ app.use((err, req, res, next) => {
 })
 
 // Listener
-app.listen(process.env.PORT, () => {
+app.listen(8080, () => {
     console.log('MUNCHIE SERVER')
     console.log(`Listening on port ${process.env.PORT}`)
 })
