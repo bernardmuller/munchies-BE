@@ -9,6 +9,8 @@
 <body>
     <h1>MUNCHIES API</h1>
     <hr>
+    <span>version 0.1</span>
+    <hr>
     <h3>Routes</h3>
     <span>Authentication routes</span>
     <ul>
@@ -45,6 +47,49 @@
             </span>
         </li>
     </ul>
+    <span>menus routes</span>
+    <ul>
+        <li>
+            <strong>
+                get /menus
+            </strong>
+            <span>
+               - requires JWT => returns list of all menus
+            </span>
+        </li>
+        <li>
+            <strong>
+                get /menus/:id
+            </strong>
+            <span>
+               - requires JWT => returns single menu object, showing details and list of meals
+            </span>
+        </li>
+        <li>
+            <strong>
+                put /menus/:id
+            </strong>
+            <span>
+               - requires JWT => updated menu with req.body
+            </span>
+        </li>
+        <li>
+            <strong>
+                post /menus
+            </strong>
+            <span>
+               - requires JWT => creates new menu with bland details and "Untitled Menu" as name
+            </span>
+        </li>
+        <li>
+            <strong>
+                delete /menus/:d
+            </strong>
+            <span>
+               - requires JWT => deletes meal
+            </span>
+        </li>
+    </ul>
     <span>meals routes</span>
     <ul>
         <li>
@@ -57,7 +102,7 @@
         </li>
         <li>
             <strong>
-                get /meals/:mealID
+                get /meals/:id
             </strong>
             <span>
                - requires JWT => returns meal object
@@ -65,7 +110,7 @@
         </li>
         <li>
             <strong>
-                put /meals/:mealID/edit
+                put /meals/:id/edit
             </strong>
             <span>
                - requires JWT => updated meal with req.body
@@ -76,12 +121,55 @@
                 post /meals/create
             </strong>
             <span>
-               - requires JWT => creates new meal from req.body
+               - requires JWT => creates new meal with blank details and "Untitled Meal" as name
             </span>
         </li>
         <li>
             <strong>
                 delete /meals/:mealID
+            </strong>
+            <span>
+               - requires JWT => deletes meal
+            </span>
+        </li>
+    </ul>
+    <span>ingredients routes</span>
+    <ul>
+        <li>
+            <strong>
+                get /ingredients
+            </strong>
+            <span>
+               - requires JWT => returns list of all meals
+            </span>
+        </li>
+        <li>
+            <strong>
+                get /ingredients/:id
+            </strong>
+            <span>
+               - requires JWT => returns singe ingredient object
+            </span>
+        </li>
+        <li>
+            <strong>
+                put /ingredients/:id
+            </strong>
+            <span>
+               - requires JWT => updated ingredient with req.body
+            </span>
+        </li>
+        <li>
+            <strong>
+                post /ingredients
+            </strong>
+            <span>
+               - requires JWT => creates new ingredient with req.body.name
+            </span>
+        </li>
+        <li>
+            <strong>
+                delete /ingredients/:id
             </strong>
             <span>
                - requires JWT => deletes meal

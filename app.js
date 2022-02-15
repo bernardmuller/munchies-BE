@@ -3,17 +3,19 @@ const cookieParser = require('cookie-parser');
 const app = express();
 const cors = require('cors');
 const path = require('path');
+const dotenv = require('dotenv');
+dotenv.config();
 
 const authRoutes = require('./routes/authRoutes');
 const mealsRouter = require('./routes/mealsRoutes');
 const menuRouter = require('./routes/menuRoutes');
 const userRouter = require('./routes/userRoutes');
+const ingredientRouter = require('./routes/ingredientRoutes');
 
 const Database = require('./services/database')
 
 //Database Connection
-const dbUrl = 'mongodb+srv://bernard:Muller1996@cluster0.94slm.mongodb.net/menuApp';
-Database.connect(dbUrl)
+Database.connect(process.env.DB_URL)
 
 //Middleware
 app.use(express.json());
@@ -32,6 +34,7 @@ app.use('/auth', authRoutes);
 app.use('/meals', mealsRouter);
 app.use('/menus', menuRouter);
 app.use('/users', userRouter);
+app.use('/ingredients', ingredientRouter);
 
 //Error handling
 app.use((err, req, res, next) => {
@@ -41,7 +44,7 @@ app.use((err, req, res, next) => {
 })
 
 // Listener
-app.listen(process.env.PORT || 4001, () => {
+app.listen(process.env.PORT, () => {
     console.log('MUNCHIE SERVER')
-    console.log("Listening on port 4001")
+    console.log(`Listening on port ${process.env.PORT}`)
 })

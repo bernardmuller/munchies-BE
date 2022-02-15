@@ -1,6 +1,8 @@
 const jwt = require('jsonwebtoken');
 const AppError = require('../utils/AppError')
 const User = require('../models/User');
+const dotenv = require('dotenv');
+dotenv.config();
 
 module.exports.auth = async(req, res, next) => {
     try {
@@ -12,7 +14,7 @@ module.exports.auth = async(req, res, next) => {
     
         req.token = token;
     
-        jwt.verify(token, 'KEEjnjd3bYEMqak6B6YkcsP4BuB6XA', async(err, decodedtoken) => {
+        await jwt.verify(token, `${process.env.JWT_SECRET}`, async(err, decodedtoken) => {
             if(err) res.status(401).json({auth: false, message: err.message});
             // const user = await User.findById(decodedtoken.id);
             res.locals.user = decodedtoken.id;
