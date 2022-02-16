@@ -1,20 +1,41 @@
-const express = require('express');
-const router = express.Router();
 const menuController = require('../controllers/menuController');
-
 const catchAsync = require('../middleware/catchAsync')
-const { auth } = require('../middleware/auth')
 
-module.exports = router;
-
-router.get('/:menuID', auth, catchAsync(menuController.get))
-
-router.put('/:menuID/edit', auth, catchAsync(menuController.update))
-
-router.post('/create', auth, catchAsync(menuController.create));
-
-router.delete('/:menuID', auth, catchAsync(menuController.delete))
-
-router.post('/addMeal', auth, catchAsync(menuController.addMeal))
-
-router.get('/', auth, menuController.getAll)
+module.exports.menuRoutes = {
+    getAllMenus : {
+        method: 'GET',
+        path: '/menus',
+        handler: catchAsync(menuController.getAll),
+        auth: true
+    },
+    getMenu : {
+        method: 'GET',
+        path: '/menus/:id',
+        handler: catchAsync(menuController.get),
+        auth: true
+    },
+    createMenu : {
+        method: 'POST',
+        path: '/menus',
+        handler: catchAsync(menuController.create),
+        auth: true
+    },
+    updateMenu : {
+        method: 'PUT',
+        path: '/meanus/:id',
+        handler: catchAsync(menuController.update),
+        auth: true
+    },
+    deleteMenu : {
+        method: 'DELETE',
+        path: '/menus/:id',
+        handler: catchAsync(menuController.delete),
+        auth: true
+    },
+    addMealtoMenu : {
+        method: 'POST',
+        path: '/meals/:id/addMeal',
+        handler: catchAsync(menuController.addMeal),
+        auth: true
+    }
+};

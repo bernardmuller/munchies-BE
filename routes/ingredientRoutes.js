@@ -1,19 +1,35 @@
-const express = require('express');
-const router = express.Router();
 const ingredientController = require('../controllers/ingredientController');
-
 const catchAsync = require('../middleware/catchAsync')
-const { auth } = require('../middleware/auth')
 
-module.exports = router;
-
-router.get('/:id', auth, catchAsync(ingredientController.get));
-
-router.put('/:id', auth, catchAsync(ingredientController.update));
-
-router.post('/', auth, catchAsync(ingredientController.create));
-
-router.delete('/:id', auth, catchAsync(ingredientController.delete));
-
-router.get('/', auth, catchAsync( ingredientController.getAll));
-
+module.exports.ingredientRoutes = {
+    getAllIngredients : {
+        method: 'GET',
+        path: '/ingredients',
+        handler: catchAsync(ingredientController.getAll),
+        auth: true
+    },
+    getIngredient : {
+        method: 'GET',
+        path: '/ingredients/:id',
+        handler: catchAsync(ingredientController.get),
+        auth: true
+    },
+    createIngredient : {
+        method: 'POST',
+        path: '/ingredients',
+        handler: catchAsync(ingredientController.create),
+        auth: true
+    },
+    updateIngredient : {
+        method: 'PUT',
+        path: '/ingredients/:id',
+        handler: catchAsync(ingredientController.update),
+        auth: true
+    },
+    deleteIngredient : {
+        method: 'DELETE',
+        path: '/ingredients/:id',
+        handler: catchAsync(ingredientController.delete),
+        auth: true
+    },
+};

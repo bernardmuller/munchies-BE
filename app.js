@@ -6,15 +6,8 @@ const path = require('path');
 const dotenv = require('dotenv');
 dotenv.config();
 
-const authRoutes = require('./routes/authRoutes');
-const mealsRouter = require('./routes/mealsRoutes');
-const menuRouter = require('./routes/menuRoutes');
-const userRouter = require('./routes/userRoutes');
-const ingredientRouter = require('./routes/ingredientRoutes');
-
-const Database = require('./services/database');
-
 //Database Connection
+const Database = require('./services/database');
 Database.connect(process.env.DB_URL);
 
 //Middleware
@@ -25,16 +18,53 @@ app.use(cors({
     credentials: true, 
     origin: true
 }));
+const { auth } = require('./middleware/auth')
 
 // Routes
+const ROUTES = require('./routes')
 app.get('/' , (req, res) => {
     res.sendFile(path.join(__dirname+'/views/home.html'));
 });
-app.use('/auth', authRoutes);
-app.use('/meals', mealsRouter);
-app.use('/menus', menuRouter);
-app.use('/users', userRouter);
-app.use('/ingredients', ingredientRouter);
+
+for(const route of Object.values(ROUTES)) {
+    
+    if(!route || !route.method || !route.path || !route.handler) {
+        continue;
+    };
+
+    switch (route.method.toUpperCase()) {
+        case 'GET':
+            if(!route.auth) {
+                app.get(route.path, route.handler);
+                break;
+            };
+            app.get(route.path, auth, route.handler);
+            break
+        case 'POST':
+            if(!route.auth) {
+                app.post(route.path, route.handler);
+                break;
+            };
+            app.post(route.path, auth, route.handler);
+            break;
+        case 'PUT':
+            if(!route.auth) {
+                app.put(route.path, route.handler);
+                break;
+            };
+            app.put(route.path, auth, route.handler);
+            break;
+        case 'DELETE':
+            if(!route.auth) {
+                app.delete(route.path, route.handler);
+                break;
+            };
+            app.delete(route.path, auth, route.handler);
+            break;
+        default:
+            break;
+    };
+};
 
 //Error handling
 app.use((err, req, res, next) => {
