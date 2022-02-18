@@ -1,5 +1,5 @@
 const express = require('express');
-const cookieParser = require('cookie-parser');
+// const cookieParser = require('cookie-parser');
 const app = express();
 const cors = require('cors');
 const path = require('path');
@@ -13,7 +13,7 @@ Database.connect(process.env.DB_URL);
 //Middleware
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
-app.use(cookieParser());
+// app.use(cookieParser());
 app.use(cors({
     credentials: true, 
     origin: true
@@ -27,7 +27,6 @@ app.get('/' , (req, res) => {
 });
 
 for(const route of Object.values(ROUTES)) {
-    
     if(!route || !route.method || !route.path || !route.handler) {
         continue;
     };

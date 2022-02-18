@@ -24,7 +24,7 @@ module.exports.createMeal = async(req, res) => {
 };
 
 module.exports.editMeal = async(req, res) => {
-    const { mealID } = req.params; 
+    const { mealID } = req.params;
     const user = await User.findById(res.locals.user);
 
     try {
@@ -100,7 +100,7 @@ module.exports.add = async(req, res) => {
 
         await meal.save();
     
-        res.status(200).send({ message : "ingredient added to meal", meal: meal });
+        res.status(200).send({ message : "Ingredient added to meal", meal: meal });
     } catch (error) {
         throw new AppError(error.errors.name.message, 400)
     };
@@ -126,7 +126,7 @@ module.exports.remove = async(req, res) => {
 
         await meal.save();
     
-        res.status(200).send({ message : "ingredient removed from meal", meal: meal });
+        res.status(200).send({ message : "Ingredient removed from meal", meal: meal });
     } catch (error) {
         throw new AppError(error.errors.name.message, 400)
     };
