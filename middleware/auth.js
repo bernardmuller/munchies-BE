@@ -11,6 +11,7 @@ module.exports.auth = async(req, res, next) => {
         
         const bearer = header.split(' ');
         const token = bearer[1];
+        if(token === 'undefined') res.status(401).json({message: 'error'});
     
         req.token = token;
     

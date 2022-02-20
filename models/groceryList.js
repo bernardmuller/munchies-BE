@@ -1,15 +1,18 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const Meal = require('./meal')
-const Ingredient = require('./ingredient')
 
-
-const menuSchema = new Schema ({
+const groceryListSchema = new Schema ({
     menu_id: {
         type: String,
         required: true,
     },
     meal_items: [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Meal'
+        },
+    ],
+    extra_items: [
         {
             type: Schema.Types.ObjectId,
             ref: 'Ingredient'
@@ -25,14 +28,5 @@ const menuSchema = new Schema ({
     }
 }, {timestamps: true});
 
-menuSchema.pre('save', function(next) {
-
-    let now = Date.now;
-    if (!this.createdAt) this.createdAt = now;
-    this.updatedAt = now;
-
-    next();
-});
-
-module.exports = mongoose.model("Menu", menuSchema);
+module.exports = mongoose.model("GroceryList", groceryListSchema);
 

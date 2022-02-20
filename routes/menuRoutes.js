@@ -34,7 +34,7 @@ module.exports.menuRoutes = {
     },
     addMealtoMenu : {
         method: 'POST',
-        path: '/meals/:id/addMeal',
+        path: '/menus/:id/addMeal',
         handler: catchAsync(menuController.addMeal),
         auth: true
     }

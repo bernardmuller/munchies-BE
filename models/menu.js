@@ -15,13 +15,15 @@ const menuSchema = new Schema ({
         // required: [true, 'Please provide a start and end date for this menu']
     },
     meals: [
-
         {
             type: Schema.Types.ObjectId,
             ref: 'Meals'
         }
-        
     ],
+    grocerylist: {
+        type: Schema.Types.ObjectId,
+        ref: 'GroceryList'
+    },
     createdBy: {
 
         type: Schema.Types.ObjectId,
@@ -34,17 +36,7 @@ const menuSchema = new Schema ({
         ref: 'User'
 
     },
-    createdAt: {
-
-        type: String,
-
-    },
-    updatedAt: {
-
-        type: String,
-
-    },
-});
+}, {timestamps: true});
 
 menuSchema.pre('save', function(next) {
 
