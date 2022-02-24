@@ -35,14 +35,17 @@ module.exports.createGroceryList = async(req, res) => {
         };
     };
 };
+
 //editList
 module.exports.edit = async(req, res) => {
     res.send('works')
 }
+
 //deleteList
 module.exports.delete = async(req, res) => {
     res.send('works')
 }
+
 //getList
 module.exports.get = async(req, res) => {
     const groceryList = await GroceryList.findById(req.params.id)

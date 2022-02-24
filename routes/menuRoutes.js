@@ -32,10 +32,16 @@ module.exports.menuRoutes = {
         handler: catchAsync(menuController.delete),
         auth: true
     },
-    addMealtoMenu : {
+    mealsList : {
         method: 'POST',
-        path: '/menus/:id/addMeal',
-        handler: catchAsync(menuController.addMeal),
+        path: '/menus/:id/meals',
+        handler: catchAsync(menuController.mealsList),
+        auth: true
+    },
+    removeMealfromMenu : {
+        method: 'POST',
+        path: '/menus/:id/removeMeal',
+        handler: catchAsync(menuController.removeMeal),
         auth: true
     }
 };

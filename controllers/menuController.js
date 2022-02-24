@@ -73,31 +73,60 @@ module.exports.create = async(req, res) => {
     }
 };
 
-//add meal
-module.exports.addMeal = async(req, res) => {
+//meals
+module.exports.mealsList = async(req, res) => {
     try {
         if(!req.body.meals) throw new AppError("No meal/s to add", 400);
 
         let menu = await Menu.findById(req.params.id);
         let grocerylist = await GroceryList.findById(menu.grocerylist)
+
+        let newMeals = [];
+        let groceryItems = [];
         req.body.meals.forEach(meal => {
-            menu.meals.push(meal.id)
-            grocerylist.meal_items.push(meal.id)
+            newMeals.push(meal.id)
+            groceryItems.push(meal.id)
         })
+        console.log(newMeals)
+        console.log(groceryItems)
+        menu.meals = newMeals;
+        grocerylist.meal_items = groceryItems;
         menu.updatedBy = res.locals.user;
+
         await grocerylist.save();
         await menu.save();
     
-        res.status(200).send({ message : "meal added to menu", menu: menu });
+        res.status(200).send({ message : "meals updated", menu: menu });
     } catch (error) {
         throw new AppError(error.errors.name.message, 400)
     }
-}   
+};  
 
-//remove meal
 //edit menu
 module.exports.update = async(req, res) => {
+    const user = await User.findById(res.locals.user);
 
+    try {
+        const updatedMenu = await Menu.findByIdAndUpdate(
+            req.params.id, 
+            {
+                ...req.body,
+                updatedBy: user._id
+            }, 
+            {
+                runValidators: true, 
+                new: true, 
+                useFindAndModify:false
+            }
+        );
+    
+        await updatedMenu.save();
+    
+        res.status(200).send({ message : "menu updated", menu: updatedMenu });
+        
+    } catch (error) {
+        throw new AppError(error.errors.name.message, 400)
+    }
 }
 
 //delete menu
@@ -124,4 +153,3 @@ module.exports.delete = async(req, res) => {
     }
 }
 
-//gnerate ingredients list
