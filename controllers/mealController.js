@@ -9,7 +9,7 @@ module.exports.getAll = async(req, res) => {
 };
 
 module.exports.getMeal = async(req, res) => {
-    const meal = await Meal.findById(req.params.mealID);
+    const meal = await Meal.findById(req.params.id);
     res.status(200).send(meal);
 };
 
