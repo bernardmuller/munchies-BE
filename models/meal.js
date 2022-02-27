@@ -17,11 +17,9 @@ const mealSchema = new Schema ({
         type: String,
 
     },
-    directions: {
-
-        type: String,
-
-    },
+    directions: [
+        String
+    ],
     ingredients: [
         {
             type: Schema.Types.ObjectId,
