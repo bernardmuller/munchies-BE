@@ -40,7 +40,7 @@ module.exports.mealsRoutes = {
     },
     removeIngredientFromMeal : {
         method: 'POST',
-        path: '/meals/:id/add',
+        path: '/meals/:id/remove',
         handler: catchAsync(mealController.remove),
         auth: true
     },

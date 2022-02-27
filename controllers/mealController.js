@@ -9,7 +9,12 @@ module.exports.getAll = async(req, res) => {
 };
 
 module.exports.getMeal = async(req, res) => {
-    const meal = await Meal.findById(req.params.id);
+    const meal = await Meal.findById(req.params.id)
+    .populate({
+        path: 'ingredients',
+        model: 'Ingredient',
+        select: '_id name'
+    })
     res.status(200).send(meal);
 };
 
@@ -24,12 +29,11 @@ module.exports.createMeal = async(req, res) => {
 };
 
 module.exports.editMeal = async(req, res) => {
-    const { mealID } = req.params;
     const user = await User.findById(res.locals.user);
 
     try {
         const updatedMeal = await Meal.findByIdAndUpdate(
-            mealID, 
+            req.params.id, 
             {
                 ...req.body,
                 updatedBy: user._id
