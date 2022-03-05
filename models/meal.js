@@ -12,11 +12,9 @@ const mealSchema = new Schema ({
         default: "Untitled Meal"
 
     },
-    season: {
-
-        type: String,
-
-    },
+    seasons: [
+        String
+    ],
     directions: [
         String
     ],

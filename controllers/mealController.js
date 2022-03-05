@@ -4,7 +4,7 @@ const AppError = require('../utils/AppError')
 
 module.exports.getAll = async(req, res) => {
     const meals = await Meal.find({ 'createdBy' : res.locals.user})
-    .select('_id name season ingredients image favourite')
+    .select('_id name seasons ingredients image favourite')
     res.status(200).send(meals);
 };
 
@@ -13,7 +13,11 @@ module.exports.getMeal = async(req, res) => {
     .populate({
         path: 'ingredients',
         model: 'Ingredient',
-        select: '_id name'
+        select: '_id name',
+    })
+    .populate({
+        path: 'createdBy',
+        model: 'User',
     })
     res.status(200).send(meal);
 };
@@ -55,23 +59,34 @@ module.exports.editMeal = async(req, res) => {
 };
 
 module.exports.deleteMeal = async(req, res) => {
-    const user = await User.findById(res.locals.user);
-    const meal = await Meal.findById(req.params.mealID);
-    if(user.id !== meal.createdBy) {
-        res.status(401).send({ message : "You are not the creator of this meal." });
-    };
-    await meal.findByIdAndDelete(req.params.mealID);
+    try {
+        const user = await User.findById(res.locals.user);
+        const meal = await Meal.findById(req.params.id);
+        if(meal === null) res.status(401).send({ message : "Meal not found" });
+        Meal.deleteOne({ _id: req.params.id }, function(err) {
+            if (!err) {
+                res.status(200).send({ message : "Meal deleted" });
+            }
+            else {
+                res.status(500).send({ message : "error" });
+            }
+        });
+    } catch (error) {
+        console.log(error)
+    }
+    
+    
 };
 
 module.exports.favourite = async(req, res) => {
     const user = await User.findById(res.locals.user);
-    const meal = await Meal.findById(req.params.mealID);
+    const meal = await Meal.findById(req.params.id);
 
     if(user._id !== meal.createdBy) {
         res.status(401).send({ message : "You are not the creator of this meal." });
     };
     const updatedMeal = await Meal.findByIdAndUpdate(
-        req.params.mealID, 
+        req.params.id, 
         {
             favourite: req.body.favourite,
             updatedBy: user._id
