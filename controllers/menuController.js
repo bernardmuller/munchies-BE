@@ -20,6 +20,11 @@ module.exports.get = async(req, res) => {
             model: 'Meal',
             select: '_id name favourite'
         })
+        .populate({
+            path: 'createdBy',
+            model: 'User',
+            select: '_id firstname'
+        })
         .populate({ 
             path: 'grocerylist',
             model: 'GroceryList',
@@ -136,9 +141,9 @@ module.exports.delete = async(req, res) => {
         console.log(user)
         const menu = await Menu.findById(req.params.id);
         if(menu === null) res.status(401).send({ message : "Menu not found" });
-        if(user._id !== menu.createdBy) {
-            res.status(401).send({ message : "You are not the creator of this menu." });
-        };
+        // if(user._id !== menu.createdBy) {
+        //     res.status(401).send({ message : "You are not the creator of this menu." });
+        // };
         Menu.deleteOne({ _id: req.params.id }, function(err) {
             if (!err) {
                 res.status(200).send({ message : "Menu deleted" });

@@ -22,7 +22,7 @@ module.exports.menuRoutes = {
     },
     updateMenu : {
         method: 'PUT',
-        path: '/meanus/:id',
+        path: '/menus/:id',
         handler: catchAsync(menuController.update),
         auth: true
     },

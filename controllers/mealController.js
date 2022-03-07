@@ -1,5 +1,6 @@
 const Meal = require('../models/meal');
 const User = require('../models/User');
+const multer = require('multer')
 const AppError = require('../utils/AppError')
 
 module.exports.getAll = async(req, res) => {
