@@ -11,16 +11,30 @@ const Menu = require('../models/menu');
 //deleteUser
 
 module.exports.get = async(req, res) => {
-    const user = await User.findById(req.params.id)
-    .select('-password -__v');
-    res.status(200).send(user);
+    try {
+        let user = await User.findById(req.params.id)
+        .select('-password -__v');
+        let userMeals = await Meal.find({ 'createdBy' : user._id})
+        user.meals = userMeals;
+
+        let userMenus = await Menu.find({ 'createdBy': user._id})
+        user.menus = userMenus;
+
+        res.status(200).send(user);
+    } catch (error) {
+        console.log(err)
+    }
 };
 
-module.exports.update = async(req, res) => {
+
+module.exports.edit = async(req, res) => {
     const currentUser = res.locals.user;
     const user = await User.findById(req.params.id);
 
-    if(user._id !== currentUser) res.status(400).send({ message: "not allowed"});
+    console.log(currentUser, user._id)
+    console.log(req.body)
+
+    if(user._id != currentUser) res.status(400).send({ message: "not allowed"});
 
     await User.findByIdAndUpdate(
         req.params.id, 

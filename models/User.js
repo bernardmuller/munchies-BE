@@ -17,7 +17,6 @@ const userSchema = Schema({
         type: String,
         required: [true, 'Please enter a valid password'],
         minlength: [6, 'Minimum password length is 6 characters']
-
     },
     firstname: {
         type: String,
@@ -40,6 +39,12 @@ const userSchema = Schema({
         {
             type: Schema.Types.ObjectId,
             ref: 'Menu'
+        }
+    ],
+    meals : [
+        {
+            type: Schema.Types.ObjectId,
+            ref: 'Meal'
         }
     ]
 }, {timestamps: true});

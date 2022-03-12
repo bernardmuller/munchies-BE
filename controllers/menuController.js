@@ -81,22 +81,25 @@ module.exports.create = async(req, res) => {
 //meals
 module.exports.mealsList = async(req, res) => {
     try {
-        if(!req.body.meals) throw new AppError("No meal/s to add", 400);
-
+        // if(!req.body.meals) throw new AppError("No meal/s to add", 400);
         let menu = await Menu.findById(req.params.id);
-        let grocerylist = await GroceryList.findById(menu.grocerylist)
+        let grocerylist = await GroceryList.findById(menu.grocerylist._id)
 
+        
         let newMeals = [];
         let groceryItems = [];
         req.body.meals.forEach(meal => {
-            newMeals.push(meal.id)
-            groceryItems.push(meal.id)
+            newMeals.push(meal)
+            groceryItems.push(meal)
         })
-        console.log(newMeals)
-        console.log(groceryItems)
+        
+        
         menu.meals = newMeals;
         grocerylist.meal_items = groceryItems;
         menu.updatedBy = res.locals.user;
+        
+        // console.log(menu)
+        // console.log(grocerylist)
 
         await grocerylist.save();
         await menu.save();
