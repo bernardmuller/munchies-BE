@@ -1,9 +1,5 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
-const User = require('./User');
-const Ingredient = require('./ingredient');
-const Cuisine = require('./cuisine');
-
 
 const mealSchema = new Schema ({
     name: {
@@ -34,15 +30,15 @@ const mealSchema = new Schema ({
     },
     image: String,
     url: String,
-    prepTime: {
+    prep_time: {
         type: Number,
         min: 0,
     },
-    cookTime: {
+    cook_time: {
         type: Number,
         min: 0,
     },
-    readyIn: {
+    ready_in: {
         type: Number,
         min: 0,
     },

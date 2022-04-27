@@ -9,14 +9,14 @@ const groceryListSchema = new Schema ({
     meal_items: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Meal'
-        },
+            ref: 'Item'
+        }
     ],
     extra_items: [
         {
             type: Schema.Types.ObjectId,
-            ref: 'Ingredient'
-        },
+            ref: 'Item'
+        }
     ],
     createdBy: {
         type: Schema.Types.ObjectId,
