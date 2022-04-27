@@ -1,5 +1,7 @@
-const userController = require('../controllers/userController');
+const UserController = require('../controllers/userController');
 const catchAsync = require('../middleware/catchAsync')
+
+const userController = new UserController;
 
 module.exports.userRoutes = {
     getAllUsers : {

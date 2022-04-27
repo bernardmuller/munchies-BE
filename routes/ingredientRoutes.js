@@ -1,5 +1,7 @@
-const ingredientController = require('../controllers/ingredientController');
-const catchAsync = require('../middleware/catchAsync')
+const IngredientController = require('../controllers/ingredientController');
+const catchAsync = require('../middleware/catchAsync');
+
+const ingredientController = new IngredientController;
 
 module.exports.ingredientRoutes = {
     getAllIngredients : {

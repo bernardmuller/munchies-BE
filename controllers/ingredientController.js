@@ -1,57 +1,88 @@
 const Ingredient = require('../models/ingredient');
 const User = require('../models/User');
+const ingredientService = require('../services/ingredientService');
 const AppError = require('../utils/AppError')
 
-module.exports.getAll = async(req, res) => {
-    const ingredients = await Ingredient.find({})
-    .select('_id name')
-    res.status(200).send(ingredients);
-};
+module.exports = class ingredientController {
+    constructor() {};
 
-module.exports.get = async(req, res) => {
-    const ingredient = await Ingredient.findById(req.params.id)
-    .select('_id name')
-    res.status(200).send(ingredient);
-};
+    getAll = async function(req, res) {
+        try {
+            const ingredient = await ingredientService.getAll();
+            
+            res.status(200).send(ingredient);
+        } catch (error) {
+            throw new AppError(error, 500)
+        };
+    };
+    
+    get = async function(req, res) {
+        try {
+            const ingredient = await ingredientService.get(req.params.id)
+            
+            res.status(200).send(ingredient);
+        } catch (error) {
+            throw new AppError(error, 500)
+        };
+    };
+    
+    create = async function(req, res) {
+        if(!req.body.name) res.status(400).send({ message : "No ingredient name provided"});
+        try {
+            let ingredient = {
+                name: req.body.name
+            };
+    
+            for(const item in ingredient) {
+                if(ingredient == undefined) return res.status(400).send({ message: `${item} is required`})
+            };
+    
+            const user = await User.findById(res.locals.user);
+    
+            ingredient.createdBy = user._id;
+    
+            const newIngredient = await ingredientService.create(ingredient);
+            
+            res.status(200).send({ message : "Ingredient updated", ingredient: newIngredient });
+        } catch (error) {
+            throw new AppError(error.errors.name.message, 400)
+        }
+    };
+    
+    update = async function(req, res) {
+        try {
+            const user = await User.findById(res.locals.user);
 
-module.exports.create = async(req, res) => {
-    if(!req.body.name) res.status(400).send({ message : "No ingredient name provided"});
-    try {
-        const user = await User.findById(res.locals.user);
-        const newIngredient = await Ingredient.create({name: req.body.name, createdBy : user._id });
-        res.status(200).send({ message : "Ingredient updated", ingredient: newIngredient });
-        
-    } catch (error) {
-        throw new AppError(error.errors.name.message, 400)
-    }
-};
-
-module.exports.update = async(req, res) => {
-    try {
-        const user = await User.findById(res.locals.user);
-        const updatedIngredient = await Ingredient.findByIdAndUpdate(
-            req.params.id, 
-            {
-                ...req.body,
+            let ingredient = {
+                name: req.body.name,
                 updatedBy: user._id
-            }
-        );
-        await updatedIngredient.save();
-    
-        res.status(200).send({ message : "Ingredient updated", ingredient: updatedIngredient });
-        
-    } catch (error) {
-        throw new AppError(error.errors.name.message, 400)
-    }
-};
+            };
 
-module.exports.delete = async(req, res) => {
-    try {
-        await Ingredient.findByIdAndDelete(req.params.id);
-    
-        res.status(200).send({ message : "Ingredient Deleted"});
+            for(const item in ingredient) {
+                if(ingredient == undefined) return res.status(400).send({ message: `${item} is required`})
+            };
+
+            const updatedIngredient = ingredientService.update(ingredient);
         
-    } catch (error) {
-        throw new AppError(error.errors.name.message, 400)
-    }
+            res.status(200).send({ message : "Ingredient updated", ingredient: updatedIngredient });
+            
+        } catch (error) {
+            throw new AppError(error.errors.name.message, 400)
+        }
+    };
+    
+    delete = async function(req, res) {
+        try {
+
+            const ingredient = await Ingredient.findById(req.params.id);
+
+            if(!ingredient) return res.status(400).send({ message: 'ingredient not found' });
+
+            await ingredientService.delete(ingredient._id);
+            
+            res.status(200).send({ message : "Ingredient Deleted"});
+        } catch (error) {
+            throw new AppError(error.errors.name.message, 400)
+        }
+    };
 };

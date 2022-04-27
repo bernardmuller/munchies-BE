@@ -1,5 +1,7 @@
-const menuController = require('../controllers/menuController');
+const MenuController = require('../controllers/menuController');
 const catchAsync = require('../middleware/catchAsync')
+
+const menuController = new MenuController;
 
 module.exports.menuRoutes = {
     getAllMenus : {

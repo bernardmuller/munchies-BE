@@ -1,6 +1,5 @@
-const Meal = require('../models/meal');
 const User = require('../models/User');
-const Menu = require('../models/menu');
+const userService = require('../services/userService');
 
 //getUser
 //updateUser
@@ -9,54 +8,45 @@ const Menu = require('../models/menu');
 //isAdmin
 //changeRole - requires my token
 //deleteUser
+module.exports = class userrController {
+    constructor() {};
 
-module.exports.get = async(req, res) => {
-    try {
-        let user = await User.findById(req.params.id)
-        .select('-password -__v');
-        let userMeals = await Meal.find({ 'createdBy' : user._id})
-        user.meals = userMeals;
+    get = async(req, res) => {
+        try {
 
-        let userMenus = await Menu.find({ 'createdBy': user._id})
-        user.menus = userMenus;
+            const user = await userService.get(req.params.id); 
+            
+            return res.status(200).send(user);
+        } catch (error) {
+            throw new AppError(error, 500);
+        };
+    };
 
-        res.status(200).send(user);
-    } catch (error) {
-        console.log(err)
-    }
-};
+    update = async(req, res) => {
+        try {
+            const requestUser = await User.findById(req.params.id);
 
+            if(requestUser._id != res.locals.user) res.status(400).send({ message: "not allowed"});
 
-module.exports.edit = async(req, res) => {
-    const currentUser = res.locals.user;
-    const user = await User.findById(req.params.id);
+            let user = {
+                firstname: req.body.firstname,
+                lastname: req.body.lastname,
+                bio: req.body.bio,
+            };
 
-    console.log(currentUser, user._id)
-    console.log(req.body)
+            let currentUser =  await userService.get(req.params.id);
 
-    if(user._id != currentUser) res.status(400).send({ message: "not allowed"});
+            for (const item in current_event) {
+                if(user[item]) {
+                    current_event[item] = user[item];
+                };
+            };
 
-    await User.findByIdAndUpdate(
-        req.params.id, 
-        {
-            ...req.body,
-            updatedBy: user._id
-        }, 
-    )
-    res.status(200).send({ message: "user updated"});
-};
-
-module.exports.getAll = async(req, res) => {
-    
-    
-};
-
-module.exports.changeRole = async(req, res) => {
-    
-    
-};
-
-module.exports.delete = async(req, res) => {
-    
-    
+            const updatedUser = await userService.get(currentUser); 
+            
+            return res.status(200).send(updatedUser);
+        } catch (error) {
+            throw new AppError(error, 500);
+        };
+    };
 };
