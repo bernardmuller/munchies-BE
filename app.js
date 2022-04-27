@@ -22,6 +22,7 @@ const { auth } = require('./middleware/auth')
 
 // Routes
 const ROUTES = require('./routes')
+console.log(ROUTES)
 app.get('/' , (req, res) => {
     res.sendFile(path.join(__dirname+'/views/home.html'));
 });

@@ -135,6 +135,30 @@ module.exports = class menuController {
         };
     };
 
+    delete = async function(req, res) {
+        try {
+            const user = await User.findById(res.locals.user);
+            console.log(user)
+            const menu = await Menu.findById(req.params.id);
+            if(menu === null) res.status(401).send({ message : "Menu not found" });
+            // if(user._id !== menu.createdBy) {
+            //     res.status(401).send({ message : "You are not the creator of this menu." });
+            // };
+            Menu.deleteOne({ _id: req.params.id }, function(err) {
+                if (!err) {
+                    res.status(200).send({ message : "Menu deleted" });
+                }
+                else {
+                    res.status(500).send({ message : "error" });
+                }
+            });
+
+            return res.send({ message: 'menu deleted'})
+        } catch (error) {
+            console.log(error)
+            return res.send(error)
+        }
+    }
     
 }
 
@@ -200,6 +224,8 @@ module.exports.mealsList = async(req, res) => {
     } catch (error) {
         throw new AppError(error.errors.name.message, 400)
     }
+
+    
 };  
 
 // //edit menu

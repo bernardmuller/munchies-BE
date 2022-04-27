@@ -40,7 +40,7 @@ module.exports.itemRoutes = {
         handler: catchAsync(itemController.unCheck),
         auth: true
     },
-    deleteMenu : {
+    deleteItem : {
         method: 'DELETE',
         path: '/items/:id',
         handler: catchAsync(itemController.delete),
