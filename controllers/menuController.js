@@ -138,7 +138,6 @@ module.exports = class menuController {
     delete = async function(req, res) {
         try {
             const user = await User.findById(res.locals.user);
-            console.log(user)
             const menu = await Menu.findById(req.params.id);
             if(menu === null) res.status(401).send({ message : "Menu not found" });
             // if(user._id !== menu.createdBy) {

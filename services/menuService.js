@@ -2,8 +2,9 @@ const Menu = require("../models/menu");
 const dotenv = require("dotenv");
 dotenv.config();
 const AppError = require("../utils/AppError");
-const grocerylistService = require("./grocerylistService");
+const GrocerylistService = require("./grocerylistService");
 
+const grocerylistService = new GrocerylistService;
 module.exports = class menuService {
 	constructor() {}
 
