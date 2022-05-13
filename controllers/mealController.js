@@ -64,9 +64,8 @@ module.exports = class MealController {
 
 	update = async function (req, res) {
 		try {
-			const meal_id = req.params.id;
-
 			let meal = {
+				meal_id: req.params.id,
 				name: req.body.name,
 				seasons: req.body.seasons,
 				directions: req.body.directions,
@@ -80,29 +79,13 @@ module.exports = class MealController {
 				ready_in: req.body.ready_in,
 				rating: req.body.rating,
 				notes: req.body.notes,
-				createdBy: user._id,
 			};
 
-			const user = await User.findById(res.locals.user);
-			const updatedMeal = await Meal.findByIdAndUpdate(
-				meal_id,
-				{
-					meal,
-					updatedBy: user._id,
-				},
-				{
-					runValidators: true,
-					new: true,
-					useFindAndModify: false,
-				}
-			);
+			meal.user = res.locals.user;
 
-			await updatedMeal.save();
+			const updatedMeal = await mealService.update(meal);
 
-			res.status(200).send({
-				message: "meal updated",
-				meal: updatedMeal,
-			});
+			res.status(200).send(updatedMeal);
 		} catch (error) {
 			throw new AppError(error.errors.name.message, 400);
 		}

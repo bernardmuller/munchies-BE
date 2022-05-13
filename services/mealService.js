@@ -1,3 +1,4 @@
+const res = require("express/lib/response");
 const Meal = require("../models/meal");
 const User = require("../models/User");
 
@@ -58,15 +59,17 @@ module.exports = class MealService {
 		});
 	};
 
-	update = async function (user_id, meal_id, meal_data) {
+	update = async function (params) {
 		return new Promise(async (resolve, reject) => {
 			try {
-				const user = await User.findById(user_id);
+				const user = await User.findById(params.user);
 
-				const updated_meal = await Meal.findByIdAndUpdate(
-					meal_id,
+				const currentMeal = await Meal.findById(params.meal_id);
+
+				const updatedMeal = await Meal.findByIdAndUpdate(
+					currentMeal._id,
 					{
-						...meal_data,
+						...params,
 						updatedBy: user._id,
 					},
 					{
@@ -78,7 +81,7 @@ module.exports = class MealService {
 
 				await updatedMeal.save();
 
-				return resolve(updated_meal);
+				return resolve(updatedMeal);
 			} catch (error) {
 				return reject(error);
 			}
