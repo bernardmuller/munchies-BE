@@ -33,15 +33,18 @@ module.exports = class userController {
 				bio: req.body.bio,
 			};
 
-			let currentUser = await userService.get(req.params.id);
+			let updateObject = {};
 
-			for (const item in current_event) {
-				if (user[item]) {
-					current_event[item] = user[item];
+			for (const item in user) {
+				if (!item == undefined) {
+					updateObject[item] = user[item];
 				}
 			}
 
-			const updatedUser = await userService.get(currentUser);
+			updateObject._id = requestUser._id;
+			updateObject.updatedBy = requestUser._id;
+
+			const updatedUser = await userService.update(updateObject);
 
 			return res.status(200).send(updatedUser);
 		} catch (error) {

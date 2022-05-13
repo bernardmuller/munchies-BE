@@ -4,7 +4,6 @@ const Meal = require("../models/meal");
 
 module.exports = class userService {
 	get = async function (params) {
-		console.log("user get service");
 		return new Promise(async (resolve, reject) => {
 			try {
 				let user = await User.findById(params).select("-password -__v");
