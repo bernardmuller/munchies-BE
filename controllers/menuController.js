@@ -34,19 +34,47 @@ module.exports = class menuController {
 
 	get = async function (req, res) {
 		try {
-			console.log(req.params);
-			let menu = {
-				id: req.params.id,
-			};
+			const menu = await Menu.findById(req.params.id)
+				.populate({
+					path: "meals",
+					model: "Meal",
+					select: "_id name favourite image seasons",
+				})
+				.populate({
+					path: "createdBy",
+					model: "User",
+					select: "_id firstname",
+				})
+				.populate({
+					path: "grocerylist",
+					model: "GroceryList",
+					select: "_id meal_items extra_items",
+					populate: {
+						path: "meal_items",
+						model: "Item",
+						populate: {
+							path: "ingredient",
+							model: "Ingredient",
+							select: "id name",
+						},
+					},
+				})
+				.populate({
+					path: "grocerylist",
+					model: "GroceryList",
+					select: "_id meal_items extra_items",
+					populate: {
+						path: "extra_items",
+						model: "Item",
+						select: "id name check",
+					},
+				});
 
-			for (const item in menu) {
-				if (item == undefined)
-					res.status(400).send({ message: `${item} is required` });
+			if (!menu) {
+				res.status(400).send({ message: "no menu found" });
 			}
 
-			const response = await menuService.get(menu);
-
-			res.status(200).send(response);
+			res.status(200).send(menu);
 		} catch (error) {
 			console.log(error);
 		}
@@ -91,7 +119,7 @@ module.exports = class menuController {
 
 			let newMeals = [];
 			for (const meal of req.body.meals) {
-				const dbmeal = await Meal.findById(meal.id);
+				const dbmeal = await Meal.findById(meal);
 				if (!dbmeal)
 					return res.status(400).send({
 						message: `meal "${meal.id}" not found`,
@@ -111,7 +139,7 @@ module.exports = class menuController {
 				for (const ingredient of dbmeal.ingredients) {
 					let newItem = new Item({
 						item_type: 1,
-						ingredient_id: ingredient._id,
+						ingredient: ingredient._id,
 						createdBy: user._id,
 					});
 
@@ -126,8 +154,6 @@ module.exports = class menuController {
 
 			await grocerylist.save();
 			await menu.save();
-
-			console.log(menu);
 
 			// const response = await menuService.mealslist(menu)
 
@@ -155,111 +181,36 @@ module.exports = class menuController {
 			return res.send(error);
 		}
 	};
-};
 
-//meals
-module.exports.mealsList = async (req, res) => {
-	try {
-		let menu = await Menu.findById(req.params.id);
-		let grocerylist = await GroceryList.findById(menu.grocerylist._id);
-		const user = await User.findById(res.locals.user);
+	extraItem = async function (req, res) {
+		try {
+			let item = {
+				name: req.body.name,
+			};
 
-		let newMeals = [];
-		req.body.meals.forEach((meal) => {
-			newMeals.push({ _id: meal.id });
-			// menu.meals.push(meal)
-		});
-		console.log(newMeals);
-		menu.meals = newMeals;
+			const user = await User.findById(res.locals.user);
+			const menu = await Menu.findById(req.params.id);
+			const menuGroceryList = await GroceryList.findById(
+				menu.grocerylist
+			);
 
-		const process = () => {
-			let groceryItems = [];
-
-			// for of loop here,, delete function
-			// forEach loops dont work with async functions
-			req.body.meals.forEach(async (meal) => {
-				let dbmeal = await Meal.findById(meal.id).populate({
-					path: "ingredients",
-					model: "Ingredient",
-				});
-
-				dbmeal.ingredients.forEach(async (item) => {
-					let newItem = new Item({
-						ingredient_id: item._id,
-						createdBy: user._id,
-					});
-					// console.log(newItem)
-					groceryItems.push(newItem._id);
-					// await newItem.save();
-				});
-				// console.log("3. " , groceryItems)
-				grocerylist.meal_items = groceryItems;
-				// console.log(grocerylist)
-				// console.log("menu: " , menu)
+			let newItem = new Item({
+				...item,
+				createdBy: user._id,
 			});
-			// console.log("2. ", groceryItems)
-		};
 
-		menu.updatedBy = res.locals.user;
+			menuGroceryList.extra_items = [
+				...menuGroceryList.extra_items,
+				newItem,
+			];
 
-		// console.log("1. ", groceryItems)
+			await newItem.save();
+			await menuGroceryList.save();
 
-		// await grocerylist.save();
-		// await menu.save();
-
-		res.status(200).send({ message: "meals updated", menu: menu });
-	} catch (error) {
-		throw new AppError(error.errors.name.message, 400);
-	}
+			return res.status(200).send(menu);
+		} catch (error) {
+			console.log(error);
+			return res.send(error);
+		}
+	};
 };
-
-// //edit menu
-// module.exports.update = async(req, res) => {
-//     const user = await User.findById(res.locals.user);
-
-//     try {
-//         const updatedMenu = await Menu.findByIdAndUpdate(
-//             req.params.id,
-//             {
-//                 ...req.body,
-//                 updatedBy: user._id
-//             },
-//             {
-//                 runValidators: true,
-//                 new: true,
-//                 useFindAndModify:false
-//             }
-//         );
-
-//         await updatedMenu.save();
-
-//         res.status(200).send({ message : "menu updated", menu: updatedMenu });
-
-//     } catch (error) {
-//         throw new AppError(error.errors.name.message, 400)
-//     }
-// }
-
-// //delete menu
-// module.exports.delete = async(req, res) => {
-//     try {
-//         const user = await User.findById(res.locals.user);
-//         console.log(user)
-//         const menu = await Menu.findById(req.params.id);
-//         if(menu === null) res.status(401).send({ message : "Menu not found" });
-//         // if(user._id !== menu.createdBy) {
-//         //     res.status(401).send({ message : "You are not the creator of this menu." });
-//         // };
-//         Menu.deleteOne({ _id: req.params.id }, function(err) {
-//             if (!err) {
-//                 res.status(200).send({ message : "Menu deleted" });
-//             }
-//             else {
-//                 res.status(500).send({ message : "error" });
-//             }
-//         });
-
-//     } catch (error) {
-//         console.log(error)
-//     }
-// }

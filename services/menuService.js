@@ -37,6 +37,7 @@ module.exports = class menuService {
 	get = async function (params) {
 		return new Promise(async (resolve, reject) => {
 			try {
+				console.log("kjenv");
 				const menu = await Menu.findById(params.id)
 					.populate({
 						path: "meals",
@@ -54,17 +55,22 @@ module.exports = class menuService {
 						select: "_id meal_items extra_items",
 						populate: {
 							path: "meal_items",
-							model: "Meal",
-							select: "id name ingredients",
+							model: "Item",
 							populate: {
-								path: "ingredients",
+								path: "ingredient",
 								model: "Ingredient",
 								select: "id name",
 							},
 						},
+						populate: {
+							path: "extra_items",
+							model: "Item",
+						},
 					});
+				console.log("cjeckwjdw");
 				return resolve(menu);
 			} catch (error) {
+				console.log(error);
 				return reject(error);
 			}
 		});
