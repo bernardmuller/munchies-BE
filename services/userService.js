@@ -23,13 +23,10 @@ module.exports = class userService {
 	update = async function (params) {
 		return new Promise(async (resolve, reject) => {
 			try {
-				console.log(params);
 				const updatedUser = await User.findByIdAndUpdate(params._id, {
 					...params,
 					updatedBy: params._id,
 				});
-
-				console.log(updatedUser);
 
 				return resolve(updatedUser);
 			} catch (error) {

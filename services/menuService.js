@@ -4,7 +4,7 @@ dotenv.config();
 const AppError = require("../utils/AppError");
 const GrocerylistService = require("./grocerylistService");
 
-const grocerylistService = new GrocerylistService;
+const grocerylistService = new GrocerylistService();
 module.exports = class menuService {
 	constructor() {}
 
@@ -85,7 +85,11 @@ module.exports = class menuService {
 	update = async function (params) {
 		return new Promise(async (resolve, reject) => {
 			try {
-				return resolve();
+				const updatedMenu = await Menu.findByIdAndUpdate(params.id, {
+					name: params.name,
+				});
+
+				return resolve(updatedMenu);
 			} catch (error) {
 				return reject(error);
 			}

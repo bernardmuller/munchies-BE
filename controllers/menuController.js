@@ -56,14 +56,14 @@ module.exports = class menuController {
 		try {
 			let menu = {
 				id: req.params.id,
+				name: req.body.name,
 			};
 
-			for (const item of menu) {
-				if ((item = undefined))
-					res.status(400).send({ message: `${item} is required` });
-			}
+			menu.updatedBy = res.locals.user;
 
-			const response = await menuService.get(menu);
+			const response = await menuService.update(menu);
+
+			console.log(response);
 
 			res.status(200).send(response);
 		} catch (error) {
@@ -139,22 +139,17 @@ module.exports = class menuController {
 
 	delete = async function (req, res) {
 		try {
-			const user = await User.findById(res.locals.user);
 			const menu = await Menu.findById(req.params.id);
 			if (menu === null)
 				res.status(401).send({ message: "Menu not found" });
-			// if(user._id !== menu.createdBy) {
-			//     res.status(401).send({ message : "You are not the creator of this menu." });
-			// };
-			Menu.deleteOne({ _id: req.params.id }, function (err) {
-				if (!err) {
-					res.status(200).send({ message: "Menu deleted" });
-				} else {
-					res.status(500).send({ message: "error" });
-				}
-			});
 
-			return res.send({ message: "menu deleted" });
+			await Menu.findByIdAndDelete({ _id: menu._id });
+			const deletedMenu = await Menu.findById({ _id: menu._id });
+
+			if (deletedMenu) {
+				return res.send("failed");
+			}
+			return res.status(200).send("success");
 		} catch (error) {
 			console.log(error);
 			return res.send(error);
