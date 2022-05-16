@@ -16,11 +16,13 @@ module.exports = class AuthController {
 				password: req.body.password,
 			};
 
-			if (!data.email) res.status(401).send("no email provided");
+			if (!user_data.email)
+				res.status(401).send({ message: "no email provided" });
 
-			if (!data.password) res.status(401).send("no password provided");
+			if (!user_data.password)
+				res.status(401).send({ message: "no password provided" });
 
-			const response = await AuthService.register(user_data);
+			const response = await authService.register(user_data);
 
 			res.status(201).json(response);
 		} catch (error) {
